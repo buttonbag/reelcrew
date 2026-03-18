@@ -1,0 +1,42 @@
+import db from "#db/client";
+
+export async function createFilm(
+  api_id, title, year, director, runtime, description, poster_url, genre, rating
+) {
+const sql = `
+  INSERT INTO films
+    (api_id, title, year, director, runtime, description, poster_url, genre, rating)
+  VALUES
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+  RETURNING *
+  `;
+const {
+  rows: [film],
+} = await db.query(sql, [
+  api_id, title, year, director, runtime, description, poster_url, genre, rating
+]);
+return film;
+}
+
+export async function getFilms() {
+  const sql = `
+  SELECT *
+  FROM films
+  `;
+  const {
+    rows: films,
+  } = await db.query(sql);
+  return films;
+}
+
+export async function getFilmById(id) {
+  const sql = `
+  SELECT *
+  FROM films
+  WHERE id = $1
+  `;
+  const {
+    rows: [film],
+  } = await db.query(sql, [id]);
+  return film;
+}
